@@ -6,7 +6,7 @@ export default function Entry(){
     return (
         <div className="flex justify-center items-center h-screen gap-4">
             <Button content="Join" onClick={() => {navigate("/join")}}/>
-            <Button content="Create" onClick={() => {navigate("/chat")}}/>
+            {/* <Button content="Create" onClick={() => {navigate("/chat")}}/> */}
         </div>
     )
 }

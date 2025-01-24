@@ -1,37 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "../ui/Button";
 import InputBox from "../ui/InputBox";
+import { useWebSocket } from "./WebSocketProvider";
 
 export default function Chat() {
   const [message, setMessage] = useState<string[]>(["Hi"]);
   const [inputValue, setInputValue] = useState("");
-  const wsRef = useRef<WebSocket | null>(null);
+  const ws = useWebSocket();
 
   useEffect(() => {
-    //@ts-ignore
-    const ws = new WebSocket("ws://localhost:3000");
-    //@ts-ignore
-    ws.onmessage = (ev) => {
-      setMessage((e) => [...e, ev.data]);
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket Error:", error);
-    };
-
-    wsRef.current = ws;
-
-    
+    if (ws) {
+      //@ts-ignore
+      ws.onmessage = (ev) => {
+        setMessage((e) => [...e, ev.data]);
+      };
+      //@ts-ignore
+      ws.onerror = (error) => {
+        console.error("WebSocket Error:", error);
+      };
+    }
   }, []);
 
   function handleSubmit() {
-    if (wsRef.current && inputValue.trim()) {
+    if (ws && inputValue.trim()) {
       //@ts-ignore
-      wsRef.current.send(
+      ws.send(
         JSON.stringify({
           type: "chat",
           payload: {
-            message:  inputValue ,
+            message: inputValue,
           },
         })
       );
